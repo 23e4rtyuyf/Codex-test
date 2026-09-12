@@ -86,3 +86,8 @@ Relay can read your primary Google Calendar for the currently open daily page. I
 3. Start Relay with `npm start`, open **Connect sources**, and choose **Connect Calendar**.
 
 After authorization, Relay fetches the selected day’s events from your primary calendar and shows their start times beside the work handoff. Calendar access tokens remain server-side in memory during development and are never exposed to the browser.
+
+
+## Relay Plus pricing
+
+Relay is usable as a private local work ritual. **Relay Plus is $15 per month or $150 per year** (two months free). Plus is where source-aware handoffs, calendar context, and work-system connections will live. The current app makes the plan visible and lets a user save their preferred plan on the device; it deliberately does not collect payment until the secure account and billing system is ready.

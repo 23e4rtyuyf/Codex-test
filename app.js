@@ -68,7 +68,7 @@ $('#timerButton').onclick = () => { paused = !paused; $('#timerButton').textCont
 $('#resetButton').onclick = () => { seconds = 20 * 60; paused = true; $('#timerButton').textContent = 'Start a session'; updateTimer(); };
 $('#themeButton').onclick = () => { document.body.classList.toggle('light'); localStorage.setItem('relay-light', document.body.classList.contains('light')); };
 $('#handoffButton').onclick = () => { const unfinished = page().promises.filter(promise => !promise.done); $('#handoffSummary').textContent = unfinished.length ? `${unfinished.length} unfinished promise${unfinished.length === 1 ? '' : 's'} will carry forward with its re-entry cue.` : 'There is nothing unfinished to carry. Leave a note anyway, if it would help.'; $('#handoffNote').value = page().closing; $('#handoffDialog').showModal(); };
-$('#handoffForm').onsubmit = event => { if (event.submitter?.value === 'cancel') return; page().closing = $('#handoffNote').value.trim(); carryForward(); persist(); $('#handoffForm').reset(); };
+$('#handoffForm').onsubmit = event => { if (event.submitter?.value === 'cancel') return; page().closing = $('#handoffNote').value.trim(); carryForward(); persist(); $('#handoffForm').reset(); setTimeout(() => showToast('Tomorrow’s handoff is ready. Your re-entry cue carried forward.'), 0); };
 document.addEventListener('keydown', event => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); openPromiseDialog(); } });
 if (localStorage.getItem('relay-light') === 'true') document.body.classList.add('light');
 setInterval(() => { if (!paused && seconds > 0) { seconds--; updateTimer(); } if (seconds === 0) { paused = true; $('#timerButton').textContent = 'Start a session'; } }, 1000);
@@ -77,40 +77,26 @@ if (capture.has('capture')) { $('#promiseTitle').value = capture.get('title') ||
 render(); updateTimer();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');
 
-async function loadIntegrations() {
-  try {
-    const response = await fetch('/api/integrations');
-    if (!response.ok) throw new Error('Integration server unavailable');
-    const { integrations } = await response.json();
-    const providerName = provider => ({ slack: 'Slack', linear: 'Linear', google: 'Google Calendar' }[provider] || provider);
-    const names = Object.entries(integrations).map(([provider, detail]) => `${providerName(provider)} · ${detail.name}`);
-    $('#connectionSummary').textContent = names.length ? names.join('  /  ') : 'Connect the sources where the work is already happening.';
-    $('#connectionsPanel').hidden = false;
-    document.querySelectorAll('[data-connect]').forEach(button => {
-      const provider = button.dataset.connect;
-      if (integrations[provider]) { button.textContent = `${providerName(provider)} connected`; button.disabled = true; }
-      button.onclick = () => { window.location.href = `/auth/${provider}`; };
-    });
-    loadCalendar();
-  } catch {
-    $('#connectionSummary').textContent = 'Run Relay with npm start to enable direct source connections.';
-    $('#connectionsPanel').hidden = false;
-  }
+function showToast(message) {
+  document.querySelector('.toast')?.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast'; toast.textContent = message; document.body.append(toast);
+  setTimeout(() => toast.remove(), 3600);
 }
-$('#connectButton').onclick = () => { $('#connectionsPanel').hidden = !$('#connectionsPanel').hidden; };
-if (new URLSearchParams(location.search).has('connected')) history.replaceState({}, '', location.pathname);
-loadIntegrations();
+function showUpgrade(feature = 'source-aware handoffs') {
+  $('#upgradeTitle').textContent = `${feature} belongs in Relay Plus.`;
+  $('#upgradeCopy').textContent = `Relay Plus will make ${feature.toLowerCase()} part of your re-entry brief, without turning Relay into another dashboard.`;
+  $('#upgradeDialog').showModal();
+}
+$('#connectButton').onclick = () => showUpgrade('the full Relay context layer');
+document.querySelectorAll('[data-upgrade]').forEach(button => button.onclick = () => showUpgrade(button.dataset.upgrade));
+document.querySelectorAll('[data-upgrade], #connectButton').forEach(button => button.addEventListener('keydown', event => { if (event.key === 'Enter') button.click(); }));
+$('#upgradeDialog').addEventListener('close', () => { const plan = $('#upgradeDialog').returnValue; if (plan === 'monthly' || plan === 'annual') { localStorage.setItem('relay-plus-interest', plan); showToast(`${plan === 'annual' ? 'Annual' : 'Monthly'} Relay Plus selected. We’ll keep this plan ready for you.`); } });
+$('#welcomePromise').onclick = () => { setTimeout(() => $('#promiseDialog').showModal(), 0); };
+if (!page().promises.length && !sessionStorage.getItem(`relay-welcomed-${keyFor()}`)) { setTimeout(() => { $('#welcomeDialog').showModal(); sessionStorage.setItem(`relay-welcomed-${keyFor()}`, 'true'); }, 450); }
 
-function formatCalendarTime(value) { if (!value) return ''; if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return 'All day'; return new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date(value)); }
-async function loadCalendar() {
-  try {
-    const date = keyFor();
-    const response = await fetch(`/api/calendar?date=${date}`);
-    if (!response.ok) throw new Error('Calendar unavailable');
-    const data = await response.json();
-    $('#calendarStatus').textContent = data.connected ? 'Live' : 'Not connected';
-    $('#calendarEvents').innerHTML = data.connected ? (data.events.length ? data.events.map(event => `<a class="calendar-event" href="${escapeHtml(event.link)}" target="_blank" rel="noopener"><time>${formatCalendarTime(event.start)}</time><span>${escapeHtml(event.title)}</span></a>`).join('') : '<p>No events on this day.</p>') : '<p>Connect Google Calendar to see the time already spoken for.</p>';
-  } catch {
-    $('#calendarStatus').textContent = 'Unavailable';
-  }
+function loadCalendar() {
+  $('#calendarStatus').textContent = 'Relay Plus';
+  $('#calendarEvents').innerHTML = '<p>Calendar context is part of Relay Plus. It will make commitments visible before you make a promise.</p>';
 }
+loadCalendar();

@@ -15,7 +15,7 @@
       <header class="topline">
         <a class="logo" href="#">RELAY<span>↗</span></a>
         <p>Leave yourself a way back in.</p>
-        <button id="connectButton" class="connect-button">Connect sources</button><button id="themeButton" class="icon-button" aria-label="Change appearance">◐</button>
+        <button id="connectButton" class="connect-button">Relay Plus</button><button id="themeButton" class="icon-button" aria-label="Change appearance">◐</button>
       </header>
 
       <section class="datebar" aria-label="Choose a day">
@@ -25,7 +25,7 @@
         <button id="todayButton" class="today-button">Return to today</button>
       </section>
 
-      <section class="connections" id="connectionsPanel" hidden><div><p class="eyebrow">CONNECTED SOURCES</p><p id="connectionSummary">No sources connected yet.</p></div><div class="connection-actions"><button data-connect="slack">Connect Slack</button><button data-connect="linear">Connect Linear</button><button data-connect="google">Connect Calendar</button></div></section>
+      <section class="connections" id="connectionsPanel" hidden><div><p class="eyebrow">RELAY PLUS · $15/MONTH OR $150/YEAR</p><p id="connectionSummary">Source-aware handoffs are the premium layer. Keep context without copying it.</p></div><div class="connection-actions"><button data-upgrade="Slack">Slack handoffs</button><button data-upgrade="Linear">Linear context</button><button data-upgrade="Calendar">Calendar context</button></div></section>
 
       <section class="brief">
         <div class="brief-copy"><p class="eyebrow">THE QUESTION</p><h2>When you open this again,<br>what should be obvious?</h2></div>
@@ -62,6 +62,8 @@
       </section>
     </main>
 
+    <dialog id="welcomeDialog"><form method="dialog"><p class="eyebrow">YOUR WORK DESERVES A WAY BACK IN</p><h2>Leave the next version of you a clear door.</h2><p class="dialog-summary">Relay is a tiny ritual for interrupted work: name the thread, make a promise, then leave an exact restart point.</p><div class="dialog-actions"><button class="submit-button" id="welcomePromise" value="default">Make the first promise <span>→</span></button><button class="plain-button" value="cancel">I know what I’m doing</button></div></form></dialog>
+    <dialog id="upgradeDialog"><form method="dialog"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="eyebrow">RELAY PLUS</p><h2 id="upgradeTitle">Bring the work context with you.</h2><p class="dialog-summary" id="upgradeCopy">Relay Plus connects your working sources and makes the next move explicit.</p><div class="plans"><button class="plan" value="monthly"><strong>$15 <small>/ month</small></strong><span>Flexible, cancel any time</span></button><button class="plan featured" value="annual"><strong>$150 <small>/ year</small></strong><span>Two months on us</span></button></div><p class="fine-print">Source connections are being prepared. Choosing a plan saves it on this device; no payment is collected yet.</p></form></dialog>
     <dialog id="promiseDialog"><form method="dialog" id="promiseForm"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="eyebrow">A PROMISE TO FUTURE YOU</p><h2>Make it possible to begin.</h2><label>What will be visibly different?<input id="promiseTitle" required maxlength="100" placeholder="Send the revised project brief" /></label><label>What is the first physical move?<textarea id="promiseCue" required maxlength="180" rows="3" placeholder="Open the feedback doc and write the three missing decisions."></textarea></label><label>What counts as enough?<input id="promiseProof" required maxlength="120" placeholder="A version Marcus can respond to" /></label><label>Source link <input id="promiseSource" type="url" maxlength="1000" placeholder="Slack, Linear, GitHub, Figma, document…" /></label><button class="submit-button" value="default">Add this promise <span>→</span></button></form></dialog>
     <dialog id="handoffDialog"><form method="dialog" id="handoffForm"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="eyebrow">TOMORROW'S HANDOFF</p><h2>Leave one useful note.</h2><p id="handoffSummary" class="dialog-summary"></p><label>What should tomorrow-you know before they begin?<textarea id="handoffNote" maxlength="300" rows="5" placeholder="I stopped because… The very next useful move is…"></textarea></label><button class="submit-button" value="default">Save and carry forward <span>→</span></button></form></dialog>
     <script src="app.js"></script>
