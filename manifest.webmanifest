@@ -1,0 +1,9 @@
+{
+  "name": "Daybook",
+  "short_name": "Daybook",
+  "description": "A private daily page for the day in front of you.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f2eb",
+  "theme_color": "#f5f2eb"
+}
