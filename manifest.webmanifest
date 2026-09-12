@@ -1,9 +1,1 @@
-{
-  "name": "Daybook",
-  "short_name": "Daybook",
-  "description": "A private daily page for the day in front of you.",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#f5f2eb",
-  "theme_color": "#f5f2eb"
-}
+{"name":"Relay — re-entry for interrupted work","short_name":"Relay","description":"Leave yourself a way back into the work.","start_url":"./","display":"standalone","background_color":"#111a1b","theme_color":"#111a1b"}

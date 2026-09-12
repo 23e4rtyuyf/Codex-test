@@ -1,30 +1,29 @@
-# Daybook
+# Relay
 
-Daybook is not a project-management board or a habit tracker. It is one quiet, date-specific page: a reason for the day, a deliberately short list, a place to park interruptions, and a closing note. Everything stays in the browser on the device you use it on.
+Relay is not a task manager. It is a **re-entry system** for work that gets interrupted.
 
-## Use it on an iPad in Chrome
+Most planning tools help collect more. Relay asks for up to three promises, then makes each one carry the information tomorrow-you actually needs: the visible outcome, the first physical move, and what “enough” looks like. When the day ends, unfinished promises are handed forward with their re-entry cue intact.
 
-Daybook must be opened from a URL; Chrome cannot run the files directly from this repository on an iPad.
+## Run it on an iPad
 
-1. Put this folder on a computer, then run the command below from the folder.
-2. Keep the computer and iPad on the same Wi-Fi network.
-3. Find the computer's local IP address (for example, `192.168.1.20`) and open `http://192.168.1.20:8000` in Chrome on the iPad.
-4. In Chrome, use the **Share** button and choose **Add to Home Screen** if it is available. This makes launch easier, but offline caching requires an HTTPS deployment (the local network URL is plain HTTP).
+Relay is a static web app. The best option is to host this folder on any static host that gives you an HTTPS URL (GitHub Pages, Cloudflare Pages, Netlify, or Vercel all work), then open that URL in Chrome on your iPad. Use Chrome’s **Share → Add to Home Screen** to make it easy to return to. HTTPS enables the included offline cache after the first visit.
+
+For a quick home-Wi-Fi preview, on a computer in this folder run:
 
 ```sh
 python3 -m http.server 8000 --bind 0.0.0.0
 ```
 
-For the best iPad experience, upload these static files to any static host (for example, GitHub Pages, Cloudflare Pages, Netlify, or Vercel) and open the resulting HTTPS URL in Chrome. That HTTPS URL enables Daybook's offline cache after the first visit. No build command or server-side environment variables are needed.
+Then open `http://YOUR-COMPUTER-IP:8000` in Chrome on the iPad. This preview works, but it cannot use the offline cache because it is plain HTTP.
 
-## A useful first five minutes
+## The daily ritual
 
-1. Write a single sentence under **The point of today**. It is a direction, not another metric.
-2. Keep **Doing** to a few concrete, finishable items. Use the check circle rather than making more lists.
-3. When an interruption or loose thought arrives, add it to **Not for now** instead of abandoning the task in front of you.
-4. Start a 25-minute session only when you know what you are about to work on.
-5. At the end, write a closing note. Moving to another date preserves the page you just made.
+1. Write the one thread you do not want to lose.
+2. Add no more than three promises. A promise must include an outcome, a first physical move, and a definition of enough.
+3. Select the promise you are about to touch, then start the 20-minute session.
+4. Put new distractions in **Loose ends** rather than changing the plan mid-stream.
+5. At the end, choose **Prepare tomorrow’s handoff**. Relay carries incomplete promises into tomorrow without stripping away the context required to restart.
 
-## Data and privacy
+## Privacy
 
-Tasks, intentions, parking-lot entries, closing notes, and theme preferences are stored in this browser's `localStorage`. They are not synced, sent to a server, or shared between devices. Clearing Chrome's site data will erase them.
+Everything is saved only in the browser’s local storage. Relay has no account, sync, analytics, or server database. Clearing site data removes your pages.

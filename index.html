@@ -3,62 +3,65 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#f5f2eb" />
+    <meta name="theme-color" content="#111a1b" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Daybook" />
+    <meta name="apple-mobile-web-app-title" content="Relay" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <title>Daybook</title>
+    <title>Relay — leave yourself a way back in</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="page">
-      <header class="masthead">
-        <a class="wordmark" href="#">daybook</a>
-        <p class="masthead-note">A private page for the day in front of you.</p>
-        <div class="masthead-tools"><button class="quiet-button" id="themeButton" aria-label="Toggle color theme">◐</button></div>
+    <main class="app-shell">
+      <header class="topline">
+        <a class="logo" href="#">RELAY<span>↗</span></a>
+        <p>Leave yourself a way back in.</p>
+        <button id="themeButton" class="icon-button" aria-label="Change appearance">◐</button>
       </header>
 
-      <section class="day-nav" aria-label="Choose a day">
-        <button class="day-arrow" id="previousDay" aria-label="Previous day">←</button>
-        <div><p class="kicker">DAILY PAGE</p><h1 id="dateHeading">Today</h1></div>
-        <button class="day-arrow" id="nextDay" aria-label="Next day">→</button>
-        <button class="today-button" id="todayButton">Today</button>
+      <section class="datebar" aria-label="Choose a day">
+        <button id="previousDay" aria-label="Previous day">←</button>
+        <div><p id="dateContext">TODAY'S HANDOFF</p><h1 id="dateHeading">Tuesday</h1></div>
+        <button id="nextDay" aria-label="Next day">→</button>
+        <button id="todayButton" class="today-button">Return to today</button>
       </section>
 
-      <section class="intention" aria-labelledby="intentionLabel">
-        <div><p class="kicker" id="intentionLabel">THE POINT OF TODAY</p><p class="intention-help">Not a goal. A sentence to come back to when the list gets noisy.</p></div>
-        <textarea id="intentionInput" rows="2" maxlength="180" placeholder="Make the important work feel less heavy."></textarea>
+      <section class="brief">
+        <div class="brief-copy"><p class="eyebrow">THE QUESTION</p><h2>When you open this again,<br>what should be obvious?</h2></div>
+        <label class="thread-field"><span>THE THREAD I DON'T WANT TO LOSE</span><textarea id="threadInput" maxlength="240" rows="3" placeholder="The thing that needs to stay alive, even if everything else moves."></textarea></label>
       </section>
 
-      <section class="workspace">
-        <section class="today-list" aria-labelledby="listTitle">
-          <div class="list-heading"><div><p class="kicker">DOING</p><h2 id="listTitle">A short, honest list</h2></div><button class="text-button" id="clearDone">Clear checked</button></div>
-          <div class="progress-wrap"><div class="progress-label"><span id="progressText">Nothing checked yet</span><span id="progressPercent">0%</span></div><div class="progress-track"><div id="progressFill"></div></div></div>
-          <ul class="task-list" id="taskList"></ul>
-          <button class="add-task" id="addTaskButton">+ Add an item <kbd>⌘ K</kbd></button>
+      <section class="canvas">
+        <section class="commitments" aria-labelledby="commitmentsTitle">
+          <div class="section-head"><div><p class="eyebrow">THREE PROMISES, MAXIMUM</p><h2 id="commitmentsTitle">Make the re-entry easy.</h2></div><button id="addPromiseButton" class="add-button">+ New promise</button></div>
+          <div class="promise-grid" id="promiseGrid"></div>
+          <p class="empty-state" id="emptyState">Nothing has your name on it yet. Add one promise—not a project, a visible piece of it.</p>
         </section>
 
-        <aside class="side-column">
-          <section class="focus-note">
-            <div class="section-cap"><span>01</span><p>MAKE A START</p></div>
-            <div class="timer-display"><span id="focusMinutes">25:00</span><small>FOCUS SESSION</small></div>
-            <p class="timer-copy">Use this for one task, not every task.</p>
-            <div class="timer-controls"><button id="timerButton">Start</button><button id="resetButton">Reset</button></div>
+        <aside class="sidecar">
+          <section class="focus-panel">
+            <p class="eyebrow">THE NEXT 20 MINUTES</p>
+            <h2 id="focusName">Choose a promise</h2>
+            <p id="focusCue">A focus session begins with a physical first move, not a timer.</p>
+            <div class="clock" id="clock">20:00</div>
+            <div class="clock-controls"><button id="timerButton">Start a session</button><button id="resetButton">Reset</button></div>
           </section>
-          <section class="parking-lot">
-            <div class="section-cap"><span>02</span><p>NOT FOR NOW</p></div>
-            <p class="parking-help">Put distractions here so you can return to them later.</p>
-            <div class="capture-row"><input id="parkingInput" maxlength="80" placeholder="A thought to keep…" /><button id="parkingAdd" aria-label="Add to parking lot">+</button></div>
-            <ul id="parkingList"></ul>
+          <section class="loose-ends">
+            <div class="section-head"><p class="eyebrow">LOOSE ENDS</p><span id="looseCount">0</span></div>
+            <p>Small things that appeared while you were working. They are captured, not promoted.</p>
+            <div class="loose-capture"><input id="looseInput" maxlength="90" placeholder="Put it here, then return" /><button id="looseAdd" aria-label="Add loose end">+</button></div>
+            <ul id="looseList"></ul>
           </section>
-          <section class="daily-close"><p class="kicker">WHEN YOU'RE DONE</p><p id="closingText">A small record is better than a perfect plan.</p><button class="text-button" id="closeDayButton">Write a closing note</button></section>
         </aside>
+      </section>
+
+      <section class="handoff">
+        <div><p class="eyebrow">CLOSE THE LOOP</p><h2>End with a handoff,<br>not a vague tomorrow.</h2><p>Relay carries unfinished promises forward with their exact re-entry cue.</p></div>
+        <button id="handoffButton" class="handoff-button">Prepare tomorrow's handoff <span>→</span></button>
       </section>
     </main>
 
-    <dialog id="taskDialog"><form method="dialog" id="taskForm"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="kicker">ADD TO THIS PAGE</p><h2>What is worth doing today?</h2><label>Item<input id="taskInput" required maxlength="80" placeholder="Make it specific and small" autofocus /></label><label>Kind<select id="projectInput"><option>Work</option><option>Personal</option><option>Errand</option></select></label><button class="ink-button" value="default">Add to my day <span>↗</span></button></form></dialog>
-    <dialog id="closeDialog"><form method="dialog" id="closeForm"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="kicker">CLOSE THE PAGE</p><h2>What is one thing you want to remember?</h2><label>Closing note<textarea id="closingInput" rows="4" maxlength="240" placeholder="A win, a lesson, or simply what happened."></textarea></label><button class="ink-button" value="default">Save note <span>↗</span></button></form></dialog>
+    <dialog id="promiseDialog"><form method="dialog" id="promiseForm"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="eyebrow">A PROMISE TO FUTURE YOU</p><h2>Make it possible to begin.</h2><label>What will be visibly different?<input id="promiseTitle" required maxlength="100" placeholder="Send the revised project brief" /></label><label>What is the first physical move?<textarea id="promiseCue" required maxlength="180" rows="3" placeholder="Open the feedback doc and write the three missing decisions."></textarea></label><label>What counts as enough?<input id="promiseProof" required maxlength="120" placeholder="A version Marcus can respond to" /></label><button class="submit-button" value="default">Add this promise <span>→</span></button></form></dialog>
+    <dialog id="handoffDialog"><form method="dialog" id="handoffForm"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="eyebrow">TOMORROW'S HANDOFF</p><h2>Leave one useful note.</h2><p id="handoffSummary" class="dialog-summary"></p><label>What should tomorrow-you know before they begin?<textarea id="handoffNote" maxlength="300" rows="5" placeholder="I stopped because… The very next useful move is…"></textarea></label><button class="submit-button" value="default">Save and carry forward <span>→</span></button></form></dialog>
     <script src="app.js"></script>
   </body>
 </html>
