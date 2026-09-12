@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f2eb" />
+    <title>Daybook</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="masthead">
+        <a class="wordmark" href="#">daybook</a>
+        <nav aria-label="Workspace"><a class="active" href="#today">Today</a><a href="#week">Week</a><a href="#notes">Notes</a></nav>
+        <div class="masthead-tools"><span id="todayLabel"></span><button class="quiet-button" id="themeButton" aria-label="Toggle color theme">◐</button></div>
+      </header>
+
+      <section class="intro" id="today">
+        <p class="kicker">PRIVATE DAILY PLANNER</p>
+        <h1>A little less,<br><em>done well.</em></h1>
+        <div class="intro-note"><p id="greeting">Good morning, Alex.</p><p>Choose a few useful things. Let the rest wait.</p><button class="ink-button" id="newTaskButton">Add something <span>↗</span></button></div>
+      </section>
+
+      <section class="workspace">
+        <aside class="left-column">
+          <section class="focus-note">
+            <div class="section-cap"><span>01</span><p>IN THE ROOM</p></div>
+            <div class="timer-display"><span id="focusMinutes">25</span><small>MINUTES</small></div>
+            <h2 id="focusTitle">Write the launch narrative</h2>
+            <p class="subtle">A quiet block, already reserved.</p>
+            <div class="timer-controls"><button id="timerButton">Pause timer</button><button id="resetButton" aria-label="Reset timer">Reset</button></div>
+          </section>
+          <section class="week-strip" id="week">
+            <div class="section-cap"><span>02</span><p>THIS WEEK</p></div>
+            <div class="weekday-row"><span>M</span><span>T</span><span>W</span><span>T</span><span class="current">F</span><span>S</span><span>S</span></div>
+            <div class="rule"></div>
+            <p><strong>14h 40m</strong> kept for deliberate work.</p>
+          </section>
+        </aside>
+
+        <section class="today-list">
+          <div class="list-heading"><div><p class="kicker">THE SHORT LIST</p><h2 id="dateHeading">Today</h2></div><button class="text-button" id="clearDone">Remove finished</button></div>
+          <div class="progress-wrap"><div class="progress-label"><span id="progressText">2 of 5 finished</span><span id="progressPercent">40%</span></div><div class="progress-track"><div id="progressFill"></div></div></div>
+          <ul class="task-list" id="taskList"></ul>
+          <button class="add-task" id="addTaskButton">+ Add another item <kbd>⌘ K</kbd></button>
+        </section>
+
+        <aside class="right-column">
+          <section class="agenda">
+            <div class="section-cap"><span>03</span><p>ON THE CALENDAR</p><button id="addEventButton" aria-label="Add calendar event">+</button></div>
+            <div id="agendaList"></div>
+          </section>
+          <section class="margin-note" id="notes"><p class="kicker">A NOTE TO SELF</p><p>Do not confuse being available with being useful.</p></section>
+          <section class="status"><span class="status-dot"></span><span><strong id="openLoops">03</strong> open items</span><small>Saved only in this browser</small></section>
+        </aside>
+      </section>
+    </main>
+
+    <dialog id="taskDialog"><form method="dialog" id="taskForm"><button class="dialog-close" value="cancel" aria-label="Close">×</button><p class="kicker">ADD TO TODAY</p><h2>What belongs on the list?</h2><label>Task<input id="taskInput" required maxlength="80" placeholder="e.g. Send the project brief" autofocus /></label><label>Area<select id="projectInput"><option>Work</option><option>Studio</option><option>Personal</option></select></label><button class="ink-button" value="default">Add item <span>↗</span></button></form></dialog>
+    <script src="app.js"></script>
+  </body>
+</html>
