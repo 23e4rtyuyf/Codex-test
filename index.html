@@ -25,7 +25,7 @@
         <button id="todayButton" class="today-button">Return to today</button>
       </section>
 
-      <section class="connections" id="connectionsPanel" hidden><div><p class="eyebrow">CONNECTED SOURCES</p><p id="connectionSummary">No sources connected yet.</p></div><div class="connection-actions"><button data-connect="slack">Connect Slack</button><button data-connect="linear">Connect Linear</button></div></section>
+      <section class="connections" id="connectionsPanel" hidden><div><p class="eyebrow">CONNECTED SOURCES</p><p id="connectionSummary">No sources connected yet.</p></div><div class="connection-actions"><button data-connect="slack">Connect Slack</button><button data-connect="linear">Connect Linear</button><button data-connect="google">Connect Calendar</button></div></section>
 
       <section class="brief">
         <div class="brief-copy"><p class="eyebrow">THE QUESTION</p><h2>When you open this again,<br>what should be obvious?</h2></div>
@@ -53,7 +53,7 @@
             <div class="loose-capture"><input id="looseInput" maxlength="90" placeholder="Put it here, then return" /><button id="looseAdd" aria-label="Add loose end">+</button></div>
             <ul id="looseList"></ul>
           </section>
-        </aside>
+        <section class="calendar-panel" id="calendarPanel"><div class="section-head"><p class="eyebrow">CALENDAR CONTEXT</p><span id="calendarStatus">Not connected</span></div><div id="calendarEvents" class="calendar-events"><p>Connect Google Calendar to see the time already spoken for.</p></div></section></aside>
       </section>
 
       <section class="handoff">

@@ -47,7 +47,7 @@ function render() {
 }
 function updateTimer() { const min = String(Math.floor(seconds / 60)).padStart(2, '0'); const sec = String(seconds % 60).padStart(2, '0'); $('#clock').textContent = `${min}:${sec}`; document.title = `${min}:${sec} · Relay`; }
 function openPromiseDialog() { $('#promiseDialog').showModal(); setTimeout(() => $('#promiseTitle').focus(), 30); }
-function moveDay(amount) { selectedDate.setDate(selectedDate.getDate() + amount); selectedPromise = null; render(); }
+function moveDay(amount) { selectedDate.setDate(selectedDate.getDate() + amount); selectedPromise = null; render(); loadCalendar(); }
 function carryForward() {
   const current = page(); const unfinished = current.promises.filter(promise => !promise.done);
   const tomorrow = new Date(selectedDate); tomorrow.setDate(tomorrow.getDate() + 1); const destinationKey = keyFor(tomorrow); const destination = journal[destinationKey] || blankPage();
@@ -58,7 +58,7 @@ function carryForward() {
 
 $('#previousDay').onclick = () => moveDay(-1);
 $('#nextDay').onclick = () => moveDay(1);
-$('#todayButton').onclick = () => { selectedDate = today(); selectedPromise = null; render(); };
+$('#todayButton').onclick = () => { selectedDate = today(); selectedPromise = null; render(); loadCalendar(); };
 $('#threadInput').oninput = event => { page().thread = event.target.value; persist(); };
 $('#addPromiseButton').onclick = openPromiseDialog;
 $('#promiseForm').onsubmit = event => { if (event.submitter?.value === 'cancel') return; page().promises.push({ title: $('#promiseTitle').value.trim(), cue: $('#promiseCue').value.trim(), proof: $('#promiseProof').value.trim(), source: $('#promiseSource').value.trim(), done: false }); persist(); renderPromises(); $('#promiseForm').reset(); };
@@ -82,14 +82,16 @@ async function loadIntegrations() {
     const response = await fetch('/api/integrations');
     if (!response.ok) throw new Error('Integration server unavailable');
     const { integrations } = await response.json();
-    const names = Object.entries(integrations).map(([provider, detail]) => `${provider === 'slack' ? 'Slack' : 'Linear'} · ${detail.name}`);
+    const providerName = provider => ({ slack: 'Slack', linear: 'Linear', google: 'Google Calendar' }[provider] || provider);
+    const names = Object.entries(integrations).map(([provider, detail]) => `${providerName(provider)} · ${detail.name}`);
     $('#connectionSummary').textContent = names.length ? names.join('  /  ') : 'Connect the sources where the work is already happening.';
     $('#connectionsPanel').hidden = false;
     document.querySelectorAll('[data-connect]').forEach(button => {
       const provider = button.dataset.connect;
-      if (integrations[provider]) { button.textContent = `${provider === 'slack' ? 'Slack' : 'Linear'} connected`; button.disabled = true; }
+      if (integrations[provider]) { button.textContent = `${providerName(provider)} connected`; button.disabled = true; }
       button.onclick = () => { window.location.href = `/auth/${provider}`; };
     });
+    loadCalendar();
   } catch {
     $('#connectionSummary').textContent = 'Run Relay with npm start to enable direct source connections.';
     $('#connectionsPanel').hidden = false;
@@ -98,3 +100,17 @@ async function loadIntegrations() {
 $('#connectButton').onclick = () => { $('#connectionsPanel').hidden = !$('#connectionsPanel').hidden; };
 if (new URLSearchParams(location.search).has('connected')) history.replaceState({}, '', location.pathname);
 loadIntegrations();
+
+function formatCalendarTime(value) { if (!value) return ''; if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return 'All day'; return new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date(value)); }
+async function loadCalendar() {
+  try {
+    const date = keyFor();
+    const response = await fetch(`/api/calendar?date=${date}`);
+    if (!response.ok) throw new Error('Calendar unavailable');
+    const data = await response.json();
+    $('#calendarStatus').textContent = data.connected ? 'Live' : 'Not connected';
+    $('#calendarEvents').innerHTML = data.connected ? (data.events.length ? data.events.map(event => `<a class="calendar-event" href="${escapeHtml(event.link)}" target="_blank" rel="noopener"><time>${formatCalendarTime(event.start)}</time><span>${escapeHtml(event.title)}</span></a>`).join('') : '<p>No events on this day.</p>') : '<p>Connect Google Calendar to see the time already spoken for.</p>';
+  } catch {
+    $('#calendarStatus').textContent = 'Unavailable';
+  }
+}

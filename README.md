@@ -71,3 +71,18 @@ Relay now includes a small Node server that serves the app and owns the OAuth ex
 4. Open `http://localhost:8000`, choose **Connect sources**, then authorize Slack or Linear.
 
 The server validates the OAuth state, exchanges the authorization code server-side, verifies the connected workspace, and exposes only connection metadata to the browser. It does not persist provider tokens to disk. The next production step is encrypted token storage plus a webhook/event pipeline; that should be added only after we connect and validate your real workspaces.
+
+## Google Calendar sync
+
+Relay can read your primary Google Calendar for the currently open daily page. It is deliberately a **read-only context layer**: Relay displays commitments already occupying the day so you can make realistic promises, but it does not create, edit, or delete calendar events.
+
+1. Create a Google OAuth web application and add this authorized redirect URL:
+
+   ```text
+   http://localhost:8000/auth/google/callback
+   ```
+
+2. Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` alongside the other values in `.env.example`.
+3. Start Relay with `npm start`, open **Connect sources**, and choose **Connect Calendar**.
+
+After authorization, Relay fetches the selected day’s events from your primary calendar and shows their start times beside the work handoff. Calendar access tokens remain server-side in memory during development and are never exposed to the browser.
