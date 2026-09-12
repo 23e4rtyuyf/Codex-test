@@ -9,6 +9,7 @@ let paused = true;
 function startOfDay(date) { return new Date(date.getFullYear(), date.getMonth(), date.getDate()); }
 function keyFor(date = selectedDate) { return date.toISOString().slice(0, 10); }
 function blankPage() { return { thread: '', promises: [], loose: [], closing: '' }; }
+function sourceName(url) { try { const host = new URL(url).hostname.replace('www.', ''); const names = { 'slack.com': 'Slack', 'linear.app': 'Linear', 'github.com': 'GitHub', 'figma.com': 'Figma', 'docs.google.com': 'Google Docs', 'notion.so': 'Notion' }; return names[host] || host; } catch { return 'Source'; } }
 function loadJournal() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
 function page() { const key = keyFor(); if (!journal[key]) journal[key] = blankPage(); return journal[key]; }
 function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(journal)); }
@@ -19,7 +20,7 @@ function dateLabel() { const diff = dayDifference(); if (diff === 0) return 'Tod
 
 function renderPromises() {
   const promises = page().promises;
-  $('#promiseGrid').innerHTML = promises.map((promise, index) => `<article class="promise ${promise.done ? 'done' : ''} ${index === selectedPromise ? 'selected' : ''}" data-promise="${index}"><header><span>0${index + 1}</span><button class="promise-menu" data-delete="${index}" aria-label="Remove promise">×</button></header><h3>${escapeHtml(promise.title)}</h3><div class="promise-detail"><p class="label">BEGIN WITH</p><p>${escapeHtml(promise.cue)}</p></div><div class="promise-proof"><span>ENOUGH LOOKS LIKE</span>${escapeHtml(promise.proof)}</div><footer><button class="select-promise" data-select="${index}">${index === selectedPromise ? 'In session' : 'Use this next'} <b>→</b></button><label class="done-toggle"><input type="checkbox" data-done="${index}" ${promise.done ? 'checked' : ''}> Done</label></footer></article>`).join('');
+  $('#promiseGrid').innerHTML = promises.map((promise, index) => `<article class="promise ${promise.done ? 'done' : ''} ${index === selectedPromise ? 'selected' : ''}" data-promise="${index}"><header><span>0${index + 1}</span><button class="promise-menu" data-delete="${index}" aria-label="Remove promise">×</button></header><h3>${escapeHtml(promise.title)}</h3><div class="promise-detail"><p class="label">BEGIN WITH</p><p>${escapeHtml(promise.cue)}</p></div><div class="promise-proof"><span>ENOUGH LOOKS LIKE</span>${escapeHtml(promise.proof)}</div>${promise.source ? `<a class="source-link" href="${escapeHtml(promise.source)}" target="_blank" rel="noopener">Open ${sourceName(promise.source)} <b>↗</b></a>` : ''}<footer><button class="select-promise" data-select="${index}">${index === selectedPromise ? 'In session' : 'Use this next'} <b>→</b></button><label class="done-toggle"><input type="checkbox" data-done="${index}" ${promise.done ? 'checked' : ''}> Done</label></footer></article>`).join('');
   $('#emptyState').hidden = promises.length > 0;
   $('#addPromiseButton').disabled = promises.length >= 3;
   $('#addPromiseButton').textContent = promises.length >= 3 ? 'Three is enough' : '+ New promise';
@@ -60,7 +61,7 @@ $('#nextDay').onclick = () => moveDay(1);
 $('#todayButton').onclick = () => { selectedDate = today(); selectedPromise = null; render(); };
 $('#threadInput').oninput = event => { page().thread = event.target.value; persist(); };
 $('#addPromiseButton').onclick = openPromiseDialog;
-$('#promiseForm').onsubmit = event => { if (event.submitter?.value === 'cancel') return; page().promises.push({ title: $('#promiseTitle').value.trim(), cue: $('#promiseCue').value.trim(), proof: $('#promiseProof').value.trim(), done: false }); persist(); renderPromises(); $('#promiseForm').reset(); };
+$('#promiseForm').onsubmit = event => { if (event.submitter?.value === 'cancel') return; page().promises.push({ title: $('#promiseTitle').value.trim(), cue: $('#promiseCue').value.trim(), proof: $('#promiseProof').value.trim(), source: $('#promiseSource').value.trim(), done: false }); persist(); renderPromises(); $('#promiseForm').reset(); };
 $('#looseAdd').onclick = () => { const text = $('#looseInput').value.trim(); if (text) { page().loose.push(text); $('#looseInput').value = ''; persist(); renderLoose(); } };
 $('#looseInput').onkeydown = event => { if (event.key === 'Enter') { event.preventDefault(); $('#looseAdd').click(); } };
 $('#timerButton').onclick = () => { paused = !paused; $('#timerButton').textContent = paused ? 'Resume session' : 'Pause session'; };
@@ -71,5 +72,7 @@ $('#handoffForm').onsubmit = event => { if (event.submitter?.value === 'cancel')
 document.addEventListener('keydown', event => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); openPromiseDialog(); } });
 if (localStorage.getItem('relay-light') === 'true') document.body.classList.add('light');
 setInterval(() => { if (!paused && seconds > 0) { seconds--; updateTimer(); } if (seconds === 0) { paused = true; $('#timerButton').textContent = 'Start a session'; } }, 1000);
+const capture = new URLSearchParams(location.search);
+if (capture.has('capture')) { $('#promiseTitle').value = capture.get('title') || ''; $('#promiseCue').value = capture.get('cue') || ''; $('#promiseProof').value = capture.get('proof') || ''; $('#promiseSource').value = capture.get('capture') || ''; $('#promiseDialog').showModal(); history.replaceState({}, '', location.pathname); }
 render(); updateTimer();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');

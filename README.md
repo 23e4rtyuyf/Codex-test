@@ -27,3 +27,21 @@ Then open `http://YOUR-COMPUTER-IP:8000` in Chrome on the iPad. This preview wor
 ## Privacy
 
 Everything is saved only in the browser’s local storage. Relay has no account, sync, analytics, or server database. Clearing site data removes your pages.
+
+## Capture from the work itself
+
+Relay now includes a small Chrome extension in [`extension/`](extension/). It is deliberately different from a full OAuth integration: it captures the exact page you are already working in, plus your re-entry cue, and sends it into Relay as a source-linked promise. This works today for Slack, Linear, GitHub, Figma, Google Docs, Notion, and any other web app—without asking for access to an entire workspace.
+
+### Install Relay Capture in desktop Chrome
+
+1. Run Relay locally or deploy it to an HTTPS URL.
+2. In desktop Chrome, open `chrome://extensions` and enable **Developer mode**.
+3. Choose **Load unpacked** and select this repository’s `extension` folder.
+4. Open the Relay Capture extension’s **Details → Extension options** and set your Relay URL. Use `http://localhost:8000` locally or your deployed HTTPS Relay URL.
+5. While viewing a Slack thread, Linear issue, GitHub pull request, Figma file, or document, click the Relay extension icon. Enter the first move and “enough” threshold, then choose **Open in Relay**.
+
+Relay opens a prefilled promise with the source link attached. Selecting that promise later gives you the original first move and an **Open source** link, so you return to the exact work surface rather than reconstructing it from memory.
+
+## Integration roadmap
+
+The capture extension is the first integration because it is private, works across tools, and proves the re-entry behavior before Relay requests broad workspace access. The next production connectors should be Slack and Linear: Relay can then draft “what changed since you last touched this?” summaries from related messages and issue activity, always retaining direct source links and requiring user confirmation for handoffs.
