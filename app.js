@@ -76,3 +76,25 @@ const capture = new URLSearchParams(location.search);
 if (capture.has('capture')) { $('#promiseTitle').value = capture.get('title') || ''; $('#promiseCue').value = capture.get('cue') || ''; $('#promiseProof').value = capture.get('proof') || ''; $('#promiseSource').value = capture.get('capture') || ''; $('#promiseDialog').showModal(); history.replaceState({}, '', location.pathname); }
 render(); updateTimer();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');
+
+async function loadIntegrations() {
+  try {
+    const response = await fetch('/api/integrations');
+    if (!response.ok) throw new Error('Integration server unavailable');
+    const { integrations } = await response.json();
+    const names = Object.entries(integrations).map(([provider, detail]) => `${provider === 'slack' ? 'Slack' : 'Linear'} · ${detail.name}`);
+    $('#connectionSummary').textContent = names.length ? names.join('  /  ') : 'Connect the sources where the work is already happening.';
+    $('#connectionsPanel').hidden = false;
+    document.querySelectorAll('[data-connect]').forEach(button => {
+      const provider = button.dataset.connect;
+      if (integrations[provider]) { button.textContent = `${provider === 'slack' ? 'Slack' : 'Linear'} connected`; button.disabled = true; }
+      button.onclick = () => { window.location.href = `/auth/${provider}`; };
+    });
+  } catch {
+    $('#connectionSummary').textContent = 'Run Relay with npm start to enable direct source connections.';
+    $('#connectionsPanel').hidden = false;
+  }
+}
+$('#connectButton').onclick = () => { $('#connectionsPanel').hidden = !$('#connectionsPanel').hidden; };
+if (new URLSearchParams(location.search).has('connected')) history.replaceState({}, '', location.pathname);
+loadIntegrations();

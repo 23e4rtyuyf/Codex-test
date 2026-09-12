@@ -15,7 +15,7 @@
       <header class="topline">
         <a class="logo" href="#">RELAY<span>↗</span></a>
         <p>Leave yourself a way back in.</p>
-        <button id="themeButton" class="icon-button" aria-label="Change appearance">◐</button>
+        <button id="connectButton" class="connect-button">Connect sources</button><button id="themeButton" class="icon-button" aria-label="Change appearance">◐</button>
       </header>
 
       <section class="datebar" aria-label="Choose a day">
@@ -24,6 +24,8 @@
         <button id="nextDay" aria-label="Next day">→</button>
         <button id="todayButton" class="today-button">Return to today</button>
       </section>
+
+      <section class="connections" id="connectionsPanel" hidden><div><p class="eyebrow">CONNECTED SOURCES</p><p id="connectionSummary">No sources connected yet.</p></div><div class="connection-actions"><button data-connect="slack">Connect Slack</button><button data-connect="linear">Connect Linear</button></div></section>
 
       <section class="brief">
         <div class="brief-copy"><p class="eyebrow">THE QUESTION</p><h2>When you open this again,<br>what should be obvious?</h2></div>

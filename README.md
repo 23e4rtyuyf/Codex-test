@@ -45,3 +45,29 @@ Relay opens a prefilled promise with the source link attached. Selecting that pr
 ## Integration roadmap
 
 The capture extension is the first integration because it is private, works across tools, and proves the re-entry behavior before Relay requests broad workspace access. The next production connectors should be Slack and Linear: Relay can then draft “what changed since you last touched this?” summaries from related messages and issue activity, always retaining direct source links and requiring user confirmation for handoffs.
+
+## Start the direct Slack and Linear connections
+
+Relay now includes a small Node server that serves the app and owns the OAuth exchange. Browser code never receives OAuth client secrets or provider access tokens. The starter server keeps connected tokens only in memory for the current development session; that is intentional for local testing and means reconnecting is required after a server restart.
+
+1. Copy `.env.example` to `.env` and fill in the Slack and Linear OAuth client IDs and secrets you create.
+2. In each provider’s OAuth app settings, configure these redirect URLs:
+
+   ```text
+   http://localhost:8000/auth/slack/callback
+   http://localhost:8000/auth/linear/callback
+   ```
+
+3. Export the values in your shell (or load `.env` with your preferred local environment tool) and start Relay:
+
+   ```sh
+   export SLACK_CLIENT_ID="..."
+   export SLACK_CLIENT_SECRET="..."
+   export LINEAR_CLIENT_ID="..."
+   export LINEAR_CLIENT_SECRET="..."
+   npm start
+   ```
+
+4. Open `http://localhost:8000`, choose **Connect sources**, then authorize Slack or Linear.
+
+The server validates the OAuth state, exchanges the authorization code server-side, verifies the connected workspace, and exposes only connection metadata to the browser. It does not persist provider tokens to disk. The next production step is encrypted token storage plus a webhook/event pipeline; that should be added only after we connect and validate your real workspaces.
